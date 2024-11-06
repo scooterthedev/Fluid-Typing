@@ -51,4 +51,38 @@ body {
 
 #restart-btn:hover {
     background-color: #006cbd;
+}
+
+.text-display span {
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.text-display .correct {
+    color: #4CAF50;
+    transform: scale(1.05);
+}
+
+.text-display .incorrect {
+    color: #f44336;
+    transform: scale(1.05);
+}
+
+.text-display .current {
+    border-left: 2px solid #ffffff;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        border-left-color: transparent;
+    }
+}
+
+.space {
+    margin-right: 4px;
+}
+
+#text-display span {
+    white-space: pre;
 } 
