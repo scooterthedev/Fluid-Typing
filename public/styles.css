@@ -69,7 +69,17 @@ body {
 }
 
 .text-display .current {
-    border-left: 2px solid #ffffff;
+    position: relative;
+}
+
+.text-display .current::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #ffffff;
     animation: blink 1s infinite;
 }
 
@@ -85,4 +95,65 @@ body {
 
 #text-display span {
     white-space: pre;
+}
+
+#text-display {
+    font-size: 1.5em;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #2d2d2d;
+    border-radius: 5px;
+    line-height: 1.5;
+    cursor: text;
+    outline: none;
+    position: relative;
+}
+
+#text-display:focus {
+    box-shadow: 0 0 0 2px #0078d4;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#results-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.results-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.results-stats div {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 5px;
+    font-size: 1.2em;
+}
+
+#wpm-chart {
+    width: 100%;
+    max-width: 600px;
+    height: 300px;
+    margin: 20px auto;
+}
+
+#retry-btn {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#retry-btn:hover {
+    background-color: #006cbd;
 } 

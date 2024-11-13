@@ -8,16 +8,25 @@
 </head>
 <body>
     <div class="container">
-        <div id="stats">
-            <span id="wpm">WPM: 0</span>
-            <span id="accuracy">Accuracy: 100%</span>
-            <span id="timer">Time: 60s</span>
+        <div id="test-container">
+            <div id="stats">
+                <span id="wpm">WPM: 0</span>
+                <span id="accuracy">Accuracy: 100%</span>
+                <span id="timer">Time: 60s</span>
+            </div>
+            <div id="text-display" class="text-display" tabindex="0"></div>
+            <button id="restart-btn">Restart Test</button>
         </div>
-        <div id="text-display" class="text-display"></div>
-        <div id="input-area">
-            <input type="text" id="typing-input" autocomplete="off" spellcheck="false">
+        <div id="results-container" class="hidden">
+            <h2>Test Results</h2>
+            <div class="results-stats">
+                <div id="final-wpm"></div>
+                <div id="final-accuracy"></div>
+                <div id="final-time"></div>
+            </div>
+            <canvas id="wpm-chart"></canvas>
+            <button id="retry-btn">Try Again</button>
         </div>
-        <button id="restart-btn">Restart Test</button>
     </div>
     <script src="bundle.js"></script>
 </body>
