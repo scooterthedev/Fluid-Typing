@@ -17,6 +17,7 @@ export class TypingTest {
     private wpmHistory: number[] = [];
     private results: Results;
     private lastWpmUpdate: number = 0;
+    private bestWpm: number = 0;
 
     constructor() {
         const textDisplay = document.getElementById('text-display');
@@ -38,6 +39,8 @@ export class TypingTest {
 
         this.results = new Results();
         this.textDisplay.setAttribute('tabindex', '0');
+
+        this.bestWpm = parseInt(localStorage.getItem('bestWpm') || '0');
 
         this.initializeEventListeners();
         this.resetTest();
@@ -76,8 +79,30 @@ export class TypingTest {
     }
 
     private handleBackspace(): void {
-        // Implementation for backspace
-        // Similar to current logic but removing the last character
+        if (this.totalCharacters > 0) {
+            const currentChar = document.getElementById(`char-${this.totalCharacters}`);
+            if (currentChar) {
+                currentChar.classList.remove('correct', 'incorrect', 'current');
+                if (currentChar.classList.contains('correct')) {
+                    this.correctCharacters--;
+                }
+            }
+
+            this.totalCharacters--;
+            
+            const currentElements = document.getElementsByClassName('current');
+            Array.from(currentElements).forEach(element => {
+                element.classList.remove('current');
+            });
+            
+            const prevChar = document.getElementById(`char-${this.totalCharacters}`);
+            if (prevChar) {
+                prevChar.classList.remove('correct', 'incorrect');
+                prevChar.classList.add('current');
+            }
+            
+            this.updateStats();
+        }
     }
 
     private startTimer(): void {
@@ -99,10 +124,17 @@ export class TypingTest {
         if (timeElapsed - this.lastWpmUpdate >= 1) {
             this.wpmHistory.push(wpm);
             this.lastWpmUpdate = timeElapsed;
+
+            this.wpmDisplay.classList.add('wpm-change');
+            setTimeout(() => {
+                this.wpmDisplay.classList.remove('wpm-change');
+            }, 300);
         }
 
-        this.wpmDisplay.textContent = `WPM: ${wpm}`;
-        this.accuracyDisplay.textContent = `Accuracy: ${accuracy}%`;
+        requestAnimationFrame(() => {
+            this.wpmDisplay.textContent = `WPM: ${wpm}`;
+            this.accuracyDisplay.textContent = `Accuracy: ${accuracy}%`;
+        });
     }
 
     private endTest(): void {
@@ -114,7 +146,30 @@ export class TypingTest {
         const wpm = Math.round((this.correctCharacters / 5) / (timeElapsed / 60));
         const accuracy = Math.round((this.correctCharacters / this.totalCharacters) * 100);
         
-        this.results.show(wpm, accuracy, timeElapsed, this.wpmHistory);
+        const isNewRecord = wpm > this.bestWpm;
+        if (isNewRecord) {
+            this.bestWpm = wpm;
+            localStorage.setItem('bestWpm', wpm.toString());
+            this.showConfetti();
+        }
+        
+        this.results.show(wpm, accuracy, timeElapsed, this.wpmHistory, isNewRecord);
+    }
+
+    private showConfetti(): void {
+        const duration = 3000;
+        const particleCount = 100;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'confetti';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            particle.style.opacity = Math.random().toString();
+            document.body.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), duration);
+        }
     }
 
     private resetTest(): void {
@@ -164,22 +219,29 @@ export class TypingTest {
         const charElement = document.getElementById(`char-${position}`);
         
         if (charElement) {
-            if (key === currentChar) {
-                charElement.classList.add('correct');
-                this.correctCharacters++;
-            } else {
-                charElement.classList.add('incorrect');
-            }
-            this.totalCharacters++;
-            
-            document.querySelector('.current')?.classList.remove('current');
-            
-            const nextChar = document.getElementById(`char-${position + 1}`);
-            if (nextChar) {
-                nextChar.classList.add('current');
-            } else if (position === this.currentText.length - 1) {
-                this.endTest();
-            }
+            requestAnimationFrame(() => {
+                if (key === currentChar) {
+                    charElement.classList.add('correct');
+                    this.correctCharacters++;
+                } else {
+                    charElement.classList.add('incorrect');
+                }
+                this.totalCharacters++;
+                
+                const currentElement = document.querySelector('.current');
+                if (currentElement) {
+                    currentElement.classList.remove('current');
+                }
+                
+                const nextChar = document.getElementById(`char-${position + 1}`);
+                if (nextChar) {
+                    setTimeout(() => {
+                        nextChar.classList.add('current');
+                    }, 50);
+                } else if (position === this.currentText.length - 1) {
+                    this.endTest();
+                }
+            });
         }
     }
 } 

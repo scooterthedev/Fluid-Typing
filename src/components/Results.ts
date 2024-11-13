@@ -9,7 +9,7 @@ export class Results {
         this.container = document.getElementById('results-container')!;
     }
 
-    show(wpm: number, accuracy: number, timeElapsed: number, wpmHistory: number[]): void {
+    show(wpm: number, accuracy: number, timeElapsed: number, wpmHistory: number[], isNewRecord: boolean): void {
         this.wpmData = wpmHistory;
         
         document.getElementById('test-container')!.classList.add('hidden');
@@ -18,6 +18,13 @@ export class Results {
         document.getElementById('final-wpm')!.textContent = `Final WPM: ${wpm}`;
         document.getElementById('final-accuracy')!.textContent = `Accuracy: ${accuracy}%`;
         document.getElementById('final-time')!.textContent = `Time: ${timeElapsed}s`;
+        
+        if (isNewRecord) {
+            const recordBadge = document.createElement('div');
+            recordBadge.className = 'new-record';
+            recordBadge.textContent = '🏆 New Record!';
+            document.getElementById('final-wpm')!.appendChild(recordBadge);
+        }
         
         this.createChart();
     }

@@ -55,17 +55,18 @@ body {
 
 .text-display span {
     display: inline-block;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
 }
 
 .text-display .correct {
     color: #4CAF50;
-    transform: scale(1.05);
+    transform: translateY(-2px) scale(1.05);
 }
 
 .text-display .incorrect {
     color: #f44336;
-    transform: scale(1.05);
+    transform: translateY(2px) scale(1.05);
 }
 
 .text-display .current {
@@ -76,16 +77,21 @@ body {
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
-    height: 100%;
-    width: 2px;
-    background-color: #ffffff;
-    animation: blink 1s infinite;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #0078d4;
+    animation: cursor 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes blink {
+@keyframes cursor {
+    0%, 100% {
+    opacity: 1;
+    transform: scaleX(1);
+    }
     50% {
-        border-left-color: transparent;
+    opacity: 0.5;
+    transform: scaleX(0.8);
     }
 }
 
@@ -156,4 +162,54 @@ body {
 
 #retry-btn:hover {
     background-color: #006cbd;
+}
+
+.confetti {
+    position: fixed;
+    top: -10px;
+    width: 10px;
+    height: 10px;
+    background-color: #0078d4;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    animation: fall linear forwards;
+    z-index: 1000;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+.new-record {
+    color: #4CAF50;
+    font-size: 0.8em;
+    margin-top: 5px;
+    animation: bounce 0.5s ease infinite alternate;
+}
+
+@keyframes bounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+/* Smooth WPM counter animation */
+#wpm, #accuracy {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wpm-change {
+    animation: wpmPulse 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes wpmPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 } 
