@@ -62,6 +62,40 @@ export class TypingTest {
             this.results.hide();
             this.resetTest();
         });
+
+        document.getElementById('start-custom-test')?.addEventListener('click', () => {
+            const customText = (document.getElementById('custom-text') as HTMLTextAreaElement).value;
+            if (customText) {
+                this.currentText = customText;
+                this.displayTextAsSpans();
+                this.resetTest();
+            } else {
+                alert('Please enter some text to start the test.');
+            }
+        });
+
+        document.getElementById('start-timed-test')?.addEventListener('click', () => {
+            this.timeLeft = 60; // Set to 60 seconds for timed test
+            this.resetTest();
+        });
+
+        document.getElementById('start-untimed-test')?.addEventListener('click', () => {
+            this.timeLeft = Infinity; // No time limit for untimed test
+            this.resetTest();
+        });
+
+        document.getElementById('start-challenge')?.addEventListener('click', () => {
+            this.currentText = WordGenerator.generateWords(10); // Challenge with 10 words
+            this.displayTextAsSpans();
+            this.resetTest();
+        });
+
+        document.getElementById('keyboard-layout')?.addEventListener('change', (e) => {
+            const layout = (e.target as HTMLSelectElement).value;
+            this.currentText = this.getTextForLayout(layout);
+            this.displayTextAsSpans();
+            this.resetTest();
+        });
     }
 
     private handleKeyPress(key: string): void {
@@ -145,14 +179,16 @@ export class TypingTest {
         const timeElapsed = Math.round((Date.now() - (this.startTime || Date.now())) / 1000);
         const wpm = Math.round((this.correctCharacters / 5) / (timeElapsed / 60));
         const accuracy = Math.round((this.correctCharacters / this.totalCharacters) * 100);
-        
+
+        localStorage.setItem('totalTests', (parseInt(localStorage.getItem('totalTests') || '0') + 1).toString());
+
         const isNewRecord = wpm > this.bestWpm;
         if (isNewRecord) {
             this.bestWpm = wpm;
             localStorage.setItem('bestWpm', wpm.toString());
             this.showConfetti();
         }
-        
+
         this.results.show(wpm, accuracy, timeElapsed, this.wpmHistory, isNewRecord);
     }
 
@@ -243,5 +279,9 @@ export class TypingTest {
                 }
             });
         }
+    }
+
+    private getTextForLayout(layout: string): string {
+        return WordGenerator.generateWords(25);
     }
 } 

@@ -39,7 +39,12 @@ body {
     margin-bottom: 20px;
 }
 
-#restart-btn {
+#restart-btn,
+#retry-btn,
+#start-custom-test,
+#start-timed-test,
+#start-untimed-test,
+#start-challenge {
     padding: 10px 20px;
     font-size: 1.1em;
     background-color: #0078d4;
@@ -47,9 +52,15 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-#restart-btn:hover {
+#restart-btn:hover,
+#retry-btn:hover,
+#start-custom-test:hover,
+#start-timed-test:hover,
+#start-untimed-test:hover,
+#start-challenge:hover {
     background-color: #006cbd;
 }
 
@@ -62,11 +73,12 @@ body {
 .text-display .correct {
     color: #4CAF50;
     transform: translateY(-2px) scale(1.05);
+    animation: bounce 0.5s ease;
 }
 
 .text-display .incorrect {
     color: #f44336;
-    transform: translateY(2px) scale(1.05);
+    background-color: rgba(244, 67, 54, 0.2);
 }
 
 .text-display .current {
@@ -189,8 +201,11 @@ body {
 }
 
 @keyframes bounce {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
+    0% { transform: translateY(0) scale(1); }
+    25% { transform: translateY(-10px) scale(1.05); }
+    50% { transform: translateY(0) scale(1.1); }
+    75% { transform: translateY(-10px) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
 }
 
 /* Smooth WPM counter animation */
@@ -212,4 +227,45 @@ body {
     100% {
         transform: scale(1);
     }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    #text-display {
+        font-size: 1.2em;
+    }
+
+    #restart-btn, #retry-btn, #start-custom-test, #start-timed-test, #start-untimed-test {
+        font-size: 1em;
+        padding: 8px 16px;
+    }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-mode .text-display {
+    background-color: #f0f0f0;
+}
+
+body.light-mode #restart-btn,
+body.light-mode #retry-btn,
+body.light-mode #start-custom-test,
+body.light-mode #start-timed-test,
+body.light-mode #start-untimed-test {
+    background-color: #0078d4;
+    color: white;
 } 

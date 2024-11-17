@@ -8,14 +8,14 @@
 </head>
 <body>
     <div class="container">
-        <div id="test-container">
-            <div id="stats">
-                <span id="wpm">WPM: 0</span>
-                <span id="accuracy">Accuracy: 100%</span>
-                <span id="timer">Time: 60s</span>
+        <div id="test-container" role="region" aria-labelledby="stats">
+            <div id="stats" role="status">
+                <span id="wpm" aria-live="polite">WPM: 0</span>
+                <span id="accuracy" aria-live="polite">Accuracy: 100%</span>
+                <span id="timer" aria-live="polite">Time: 60s</span>
             </div>
-            <div id="text-display" class="text-display" tabindex="0"></div>
-            <button id="restart-btn">Restart Test</button>
+            <div id="text-display" class="text-display" tabindex="0" role="textbox" aria-label="Typing area"></div>
+            <button id="restart-btn" aria-label="Restart the typing test">Restart Test</button>
         </div>
         <div id="results-container" class="hidden">
             <h2>Test Results</h2>
@@ -26,6 +26,19 @@
             </div>
             <canvas id="wpm-chart"></canvas>
             <button id="retry-btn">Try Again</button>
+        </div>
+        <div>
+            <textarea id="custom-text" placeholder="Enter your custom text here..."></textarea>
+            <button id="start-custom-test">Start Custom Test</button>
+            <button id="start-timed-test">Start Timed Test</button>
+            <button id="start-untimed-test">Start Untimed Test</button>
+            <button id="start-challenge">Start Typing Challenge</button>
+            <button id="toggle-theme">Toggle Dark/Light Mode</button>
+            <select id="keyboard-layout">
+                <option value="qwerty">QWERTY</option>
+                <option value="azerty">AZERTY</option>
+                <option value="dvorak">Dvorak</option>
+            </select>
         </div>
     </div>
     <script src="bundle.js"></script>

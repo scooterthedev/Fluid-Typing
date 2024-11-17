@@ -4,9 +4,42 @@ export class Results {
     private container: HTMLElement;
     private wpmData: number[] = [];
     private chart: Chart | null = null;
+    private userName: string | null = null;
+    private leaderboard: { name: string, wpm: number }[] = [];
 
     constructor() {
         this.container = document.getElementById('results-container')!;
+        this.loadUserProfile();
+    }
+
+    private loadUserProfile(): void {
+        this.userName = localStorage.getItem('userName');
+        const userNameElement = document.getElementById('user-name');
+        if (this.userName && userNameElement) {
+            userNameElement.textContent = `User: ${this.userName}`;
+        } else {
+            if (userNameElement) {
+                this.promptUserName();
+            } else {
+                console.error("User name element not found.");
+            }
+        }
+    }
+
+    private promptUserName(): void {
+        const name = prompt("Please enter your name:");
+        if (name) {
+            this.userName = name;
+            localStorage.setItem('userName', name);
+            const userNameElement = document.getElementById('user-name');
+            if (userNameElement) {
+                userNameElement.textContent = `User: ${name}`;
+            } else {
+                console.error("User name element not found when setting name.");
+            }
+        } else {
+            console.warn("No name entered.");
+        }
     }
 
     show(wpm: number, accuracy: number, timeElapsed: number, wpmHistory: number[], isNewRecord: boolean): void {
@@ -27,6 +60,7 @@ export class Results {
         }
         
         this.createChart();
+        this.updateLeaderboard(this.userName || 'Anonymous', wpm);
     }
 
     hide(): void {
@@ -63,5 +97,27 @@ export class Results {
         };
 
         this.chart = new Chart(ctx, config);
+    }
+
+    private updateLeaderboard(name: string, wpm: number): void {
+        this.leaderboard.push({ name, wpm });
+        this.leaderboard.sort((a, b) => b.wpm - a.wpm);
+        this.leaderboard = this.leaderboard.slice(0, 5); // Keep top 5 scores
+        this.displayLeaderboard();
+    }
+
+    private displayLeaderboard(): void {
+        const leaderboardContainer = document.getElementById('leaderboard');
+        if (!leaderboardContainer) {
+            console.error("Leaderboard container not found.");
+            return; // Exit the method if the container is not found
+        }
+        
+        leaderboardContainer.innerHTML = '';
+        this.leaderboard.forEach(entry => {
+            const entryDiv = document.createElement('div');
+            entryDiv.textContent = `${entry.name}: ${entry.wpm} WPM`;
+            leaderboardContainer.appendChild(entryDiv);
+        });
     }
 } 
