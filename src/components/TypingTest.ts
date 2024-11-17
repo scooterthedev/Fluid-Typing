@@ -47,55 +47,64 @@ export class TypingTest {
     }
 
     private initializeEventListeners(): void {
-        this.textDisplay.addEventListener('keydown', (e) => {
-            if (e.key.length === 1) {
-                this.handleKeyPress(e.key);
-                e.preventDefault();
-            } else if (e.key === 'Backspace') {
-                this.handleBackspace();
-                e.preventDefault();
-            }
-        });
-        
-        this.restartBtn.addEventListener('click', () => this.resetTest());
-        document.getElementById('retry-btn')?.addEventListener('click', () => {
-            this.results.hide();
-            this.resetTest();
-        });
+        try {
+            this.textDisplay.addEventListener('keydown', (e) => {
+                if (e.key.length === 1) {
+                    this.handleKeyPress(e.key);
+                    e.preventDefault();
+                } else if (e.key === 'Backspace') {
+                    this.handleBackspace();
+                    e.preventDefault();
+                }
+            });
 
-        document.getElementById('start-custom-test')?.addEventListener('click', () => {
-            const customText = (document.getElementById('custom-text') as HTMLTextAreaElement).value;
-            if (customText) {
-                this.currentText = customText;
+            this.restartBtn.addEventListener('click', () => this.resetTest());
+
+            const buttons = {
+                'retry-btn': () => {
+                    this.results.hide();
+                    this.resetTest();
+                },
+                'start-custom-test': () => {
+                    const customText = (document.getElementById('custom-text') as HTMLTextAreaElement)?.value;
+                    if (customText?.trim()) {
+                        this.currentText = customText;
+                        this.displayTextAsSpans();
+                        this.resetTest();
+                    } else {
+                        alert('Please enter some text to start the test.');
+                    }
+                },
+                'start-timed-test': () => {
+                    this.timeLeft = 60;
+                    this.currentText = WordGenerator.generateWords(25);
+                    this.resetTest();
+                },
+                'start-untimed-test': () => {
+                    this.timeLeft = Infinity;
+                    this.currentText = '';
+                    this.resetTest();
+                },
+                'start-challenge': () => {
+                    this.currentText = WordGenerator.generateWords(10);
+                    this.displayTextAsSpans();
+                    this.resetTest();
+                }
+            };
+
+            Object.entries(buttons).forEach(([id, handler]) => {
+                document.getElementById(id)?.addEventListener('click', handler);
+            });
+
+            document.getElementById('keyboard-layout')?.addEventListener('change', (e) => {
+                const layout = (e.target as HTMLSelectElement).value;
+                this.currentText = this.getTextForLayout(layout);
                 this.displayTextAsSpans();
                 this.resetTest();
-            } else {
-                alert('Please enter some text to start the test.');
-            }
-        });
-
-        document.getElementById('start-timed-test')?.addEventListener('click', () => {
-            this.timeLeft = 60; // Set to 60 seconds for timed test
-            this.resetTest();
-        });
-
-        document.getElementById('start-untimed-test')?.addEventListener('click', () => {
-            this.timeLeft = Infinity; // No time limit for untimed test
-            this.resetTest();
-        });
-
-        document.getElementById('start-challenge')?.addEventListener('click', () => {
-            this.currentText = WordGenerator.generateWords(10); // Challenge with 10 words
-            this.displayTextAsSpans();
-            this.resetTest();
-        });
-
-        document.getElementById('keyboard-layout')?.addEventListener('change', (e) => {
-            const layout = (e.target as HTMLSelectElement).value;
-            this.currentText = this.getTextForLayout(layout);
-            this.displayTextAsSpans();
-            this.resetTest();
-        });
+            });
+        } catch (error) {
+            console.error('Error initializing event listeners:', error);
+        }
     }
 
     private handleKeyPress(key: string): void {
@@ -213,9 +222,11 @@ export class TypingTest {
             clearInterval(this.timer);
         }
         
-        this.currentText = WordGenerator.generateWords(25);
+        if (!this.currentText) {
+            this.currentText = WordGenerator.generateWords(25);
+        }
+        
         this.displayTextAsSpans();
-        this.timeLeft = 60;
         this.startTime = null;
         this.correctCharacters = 0;
         this.totalCharacters = 0;
@@ -229,7 +240,7 @@ export class TypingTest {
         
         this.wpmDisplay.textContent = 'WPM: 0';
         this.accuracyDisplay.textContent = 'Accuracy: 100%';
-        this.timerDisplay.textContent = 'Time: 60s';
+        this.timerDisplay.textContent = `Time: ${this.timeLeft}s`;
         
         this.textDisplay.focus();
     }
@@ -271,9 +282,7 @@ export class TypingTest {
                 
                 const nextChar = document.getElementById(`char-${position + 1}`);
                 if (nextChar) {
-                    setTimeout(() => {
-                        nextChar.classList.add('current');
-                    }, 50);
+                    nextChar.classList.add('current');
                 } else if (position === this.currentText.length - 1) {
                     this.endTest();
                 }

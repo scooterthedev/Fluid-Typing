@@ -8,6 +8,19 @@
 </head>
 <body>
     <div class="container">
+        <div class="button-container">
+            <textarea id="custom-text" placeholder="Enter your custom text here..."></textarea>
+            <button id="start-custom-test">Start Custom Test</button>
+            <button id="start-timed-test">Start Timed Test</button>
+            <button id="start-untimed-test">Start Untimed Test</button>
+            <button id="start-challenge">Start Typing Challenge</button>
+            <button id="toggle-theme">Toggle Dark/Light Mode</button>
+            <select id="keyboard-layout">
+                <option value="qwerty">QWERTY</option>
+                <option value="azerty">AZERTY</option>
+                <option value="dvorak">Dvorak</option>
+            </select>
+        </div>
         <div id="test-container" role="region" aria-labelledby="stats">
             <div id="stats" role="status">
                 <span id="wpm" aria-live="polite">WPM: 0</span>
@@ -26,19 +39,6 @@
             </div>
             <canvas id="wpm-chart"></canvas>
             <button id="retry-btn">Try Again</button>
-        </div>
-        <div>
-            <textarea id="custom-text" placeholder="Enter your custom text here..."></textarea>
-            <button id="start-custom-test">Start Custom Test</button>
-            <button id="start-timed-test">Start Timed Test</button>
-            <button id="start-untimed-test">Start Untimed Test</button>
-            <button id="start-challenge">Start Typing Challenge</button>
-            <button id="toggle-theme">Toggle Dark/Light Mode</button>
-            <select id="keyboard-layout">
-                <option value="qwerty">QWERTY</option>
-                <option value="azerty">AZERTY</option>
-                <option value="dvorak">Dvorak</option>
-            </select>
         </div>
     </div>
     <script src="bundle.js"></script>
